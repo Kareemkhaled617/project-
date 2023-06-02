@@ -8,6 +8,8 @@ import 'package:p/listpro.dart';
 import 'main.dart';
 
 class pro extends StatelessWidget {
+  const pro({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
