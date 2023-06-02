@@ -5,7 +5,7 @@ import 'package:p/Show.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:p/listpro.dart';
 void main() {
-  runApp(new MaterialApp(
+  runApp(const MaterialApp(
     title: "camera app",
     home: LandingScreen(),
   ));
@@ -92,9 +92,9 @@ class _LandingScreenState extends State<LandingScreen> {
         child: Center(
           child: Column(
               children: <Widget>[
-                SizedBox(height: 240,),
+                const SizedBox(height: 240,),
                 Image.asset('images/png.png',width: 170,),
-                SizedBox(height: 30,),
+                const SizedBox(height: 30,),
                 Container(
                     height: 60.0,
                     width: 300,
@@ -107,7 +107,7 @@ class _LandingScreenState extends State<LandingScreen> {
                       _showChoiceDialog(context);
                     }
                       ,
-                      child: Text('Scanning',
+                      child: const Text('Scanning',
                         style:TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize:(23.0),
                             letterSpacing: 1.0
                         ),),)

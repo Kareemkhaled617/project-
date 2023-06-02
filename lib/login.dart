@@ -1,13 +1,10 @@
 import 'dart:convert';
-import 'dart:ffi';
 
 //import 'package:app1/all.dart';
 import 'package:p/All.dart';
-import 'package:p/home.dart';
 import 'package:http/http.dart';
 
 import 'package:p/register.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'main.dart';

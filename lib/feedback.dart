@@ -1,10 +1,16 @@
+import 'dart:convert';
+
+import 'package:http/http.dart';
 import 'package:p/listpro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:p/edit.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+
+import 'main.dart';
 class feedback extends StatelessWidget {
-  final msgcontroller=TextEditingController();
+  final msgController=TextEditingController();
+  double rate=0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,22 +24,22 @@ class feedback extends StatelessWidget {
         children: [
           Column(
             children:[
-              SizedBox(height: 200,),
-             Padding(padding: EdgeInsets.symmetric(horizontal: 8.0),
+              const SizedBox(height: 200,),
+             Padding(padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child:Text('Tell Us How We Can Improve',
                   style: TextStyle(color:Colors.yellow.shade800,fontSize: 18.0,fontWeight: FontWeight.bold),)
-            ),SizedBox(height:10 ,),
+            ),const SizedBox(height:10 ,),
               Row(
                 children: [
                   Expanded(
                 child:  Container(
-                    margin: EdgeInsets.symmetric(horizontal:20),
+                    margin: const EdgeInsets.symmetric(horizontal:20),
                     height: 150,
                     decoration: BoxDecoration(
                       color: Colors.grey.shade100,
                     ),
                     child: TextField(
-                      controller: msgcontroller,
+                      controller: msgController,
                       style:const TextStyle(color: Colors.black,fontSize: 15
                       ),
                       maxLines: 10,
@@ -45,11 +51,11 @@ class feedback extends StatelessWidget {
                   ),)
                 ],
               ),
-              SizedBox(height:50 ,),
+              const SizedBox(height:50 ,),
           const    Center(
                 child: Text('How Would You Rate Our App?',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,),),
               ),
-              SizedBox(height:30 ,),
+              const SizedBox(height:30 ,),
               Center(
                 child:RatingBar.builder(
                   initialRating:3,
@@ -63,12 +69,13 @@ class feedback extends StatelessWidget {
                     color: Colors.amber,
                   ),
                   onRatingUpdate: (rating) {
+                    rate=rating;
                     print(rating);
                   },
                 ),
               ),
 
-              SizedBox(height:50 ,),
+              const SizedBox(height:50 ,),
               Container(
                 width: 250,
                 decoration: BoxDecoration(
@@ -76,7 +83,12 @@ class feedback extends StatelessWidget {
                   color: Colors.blue.shade300,
                 ),
                 child: MaterialButton(
-                  onPressed: (){},
+                  onPressed: (){
+
+                    print(rate);
+
+                    feedBack(message:msgController.text, stars:rate );
+                  },
                   child: const Text('Send Now',style: TextStyle(letterSpacing: 1,color: Colors.white,fontSize: 20,fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -87,4 +99,35 @@ class feedback extends StatelessWidget {
         ],
       ),
     );
-  }}
+  }
+
+
+
+  Future feedBack({
+    required String message,
+    required double stars,
+  }) async {
+    var response = await post(
+      Uri.parse('https://172-105-248-224.ip.linodeusercontent.com/feedback/'),
+      headers: {
+        // 'Content-Type': 'multipart/form-data',
+        'Authorization': 'token ${sharedPreferences.getString('token')}',
+      },
+      body: {
+        'message': message,
+        'stars': stars,
+        'token': 'token ${sharedPreferences.getString('token')}',
+      },
+    );
+
+    var data = json.decode(response.body);
+    return data;
+  }
+
+
+
+
+
+
+
+}
