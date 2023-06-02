@@ -1,13 +1,18 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:p/All.dart';
 import 'package:p/feedback.dart';
 import 'package:p/history_list.dart';
-import 'package:p/home.dart';
 import 'package:p/pro.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:p/screens/diseases_list.dart';
-import 'package:flutter/material.dart';
 import 'package:p/screens/governatlist.dart';
 import 'package:p/step1.dart';
+
+import 'login.dart';
+import 'main.dart';
+
 class listpro extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -15,107 +20,191 @@ class listpro extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          UserAccountsDrawerHeader(accountName: Text('nehal emad'),
-            accountEmail: Text('nehalemad@gmail.com'),
-            currentAccountPicture: CircleAvatar(
-              child: ClipOval(
-                child: Image.asset(
-                  "images/p1.jpg", width: 90, height: 90, fit: BoxFit.cover,),
-              ),
-            ),
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("images/R.jpg",
-                  ),
-                  fit: BoxFit.cover,
-                )
-            ),
-          ),
+          FutureBuilder(
+              future: getData(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  Map data = snapshot.data as Map;
+                  return UserAccountsDrawerHeader(
+                    accountName: Text(data['username']),
+                    accountEmail: Text(data['email']),
+                    currentAccountPicture: CircleAvatar(
+                      child: ClipOval(
+                        child: Image.network(
+                          data['userprofile']['profile_pic'],
+                          width: 90,
+                          height: 90,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    decoration: const BoxDecoration(
+                        image: DecorationImage(
+                      image: AssetImage(
+                        "images/R.jpg",
+                      ),
+                      fit: BoxFit.cover,
+                    )),
+                  );
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              }),
           ListTile(
-            leading: Icon(Icons.home),
-            title: Text('Home'),
+            leading: const Icon(Icons.home),
+            title: const Text('Home'),
             onTap: () {
               Navigator.push(
-                context, MaterialPageRoute(builder: (context) => All()),);
+                context,
+                MaterialPageRoute(builder: (context) => All()),
+              );
             },
           ),
           ListTile(
-            leading: Icon(Icons.account_circle_sharp),
-            title: Text('Profile'),
+            leading: const Icon(Icons.account_circle_sharp),
+            title: const Text('Profile'),
             onTap: () {
               Navigator.push(
-                context, MaterialPageRoute(builder: (context) => pro()),);
+                context,
+                MaterialPageRoute(builder: (context) => pro()),
+              );
             },
           ),
-          SizedBox(height: 10,),
+          const SizedBox(
+            height: 10,
+          ),
           ListTile(
-            leading: Icon(Icons.history),
-            title: Text('History'),
+            leading: const Icon(Icons.history),
+            title: const Text('History'),
             onTap: () {
               Navigator.push(
-                context, MaterialPageRoute(builder: (context) => HistoryListScreen()),);
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const HistoryListScreen()),
+              );
             },
           ),
-          SizedBox(height: 10,),
-          ListTile(
-            leading: Icon(Icons.health_and_safety_outlined),
-            title: Text('Healthcare'),
-            onTap: () {
-              Navigator.push(context,
-                MaterialPageRoute(builder: (context) => DiseasesListScreen()),);
-            },
+          const SizedBox(
+            height: 10,
           ),
-          SizedBox(height: 10,),
           ListTile(
-            leading: Icon(Icons.question_mark_rounded),
-            title: Text('Help Center'),
+            leading: const Icon(Icons.health_and_safety_outlined),
+            title: const Text('Healthcare'),
             onTap: () {
               Navigator.push(
-                context, MaterialPageRoute(builder: (context) => GovernateListScreen()),);
+                context,
+                MaterialPageRoute(builder: (context) => DiseasesListScreen()),
+              );
             },
           ),
-          SizedBox(height: 10,),
+          const SizedBox(
+            height: 10,
+          ),
           ListTile(
-            leading: Icon(Icons.note_alt_outlined),
-            title: Text('My Notes'),
+            leading: const Icon(Icons.question_mark_rounded),
+            title: const Text('Help Center'),
             onTap: () {
               Navigator.push(
-                context, MaterialPageRoute(builder: (context) => All()),);
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const GovernateListScreen()),
+              );
             },
           ),
-          Divider(),
-
-          SizedBox(height: 10,),
+          const SizedBox(
+            height: 10,
+          ),
           ListTile(
-            leading: Icon(Icons.front_hand_outlined),
-            title: Text('How to use'),
+            leading: const Icon(Icons.note_alt_outlined),
+            title: const Text('My Notes'),
             onTap: () {
               Navigator.push(
-                context, MaterialPageRoute(builder: (context) => step1()),);
+                context,
+                MaterialPageRoute(builder: (context) => All()),
+              );
             },
           ),
-          SizedBox(height: 10,),
+          const Divider(),
+          const SizedBox(
+            height: 10,
+          ),
           ListTile(
-            leading: Icon(Icons.feedback_outlined),
-            title: Text('Feedback'),
+            leading: const Icon(Icons.front_hand_outlined),
+            title: const Text('How to use'),
             onTap: () {
               Navigator.push(
-                context, MaterialPageRoute(builder: (context) => feedback()),);
+                context,
+                MaterialPageRoute(builder: (context) => const step1()),
+              );
             },
           ),
-
-          SizedBox(height: 10,),
-          Divider(),
+          const SizedBox(
+            height: 10,
+          ),
           ListTile(
-            leading: Icon(Icons.exit_to_app),
-            title: Text('Log Out'),
+            leading: const Icon(Icons.feedback_outlined),
+            title: const Text('Feedback'),
             onTap: () {
               Navigator.push(
-                context, MaterialPageRoute(builder: (context) => home()),);
+                context,
+                MaterialPageRoute(builder: (context) => feedback()),
+              );
+            },
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.exit_to_app),
+            title: const Text('Log Out'),
+            onTap: () {
+              logOut().then((value) {
+                Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (context) => login()));
+              });
             },
           )
         ],
       ),
     );
+  }
+
+  Future logOut() async {
+    var response = await put(
+        Uri.parse('https://172-105-248-224.ip.linodeusercontent.com/logout/'),
+        headers: {
+          "Authorization": 'token ${sharedPreferences.getString('token')}' ?? ''
+        },
+        body: {
+          'token': sharedPreferences.getString('token')
+        });
+
+    if (response.statusCode == 200) {
+      print(json.decode(response.body));
+      return json.decode(response.body);
+    } else {
+      print("Error");
+      print(response.body);
+    }
+  }
+
+  getData() async {
+    var response = await get(
+        Uri.parse(
+            'https://172-105-248-224.ip.linodeusercontent.com/updateprofile/'),
+        headers: {
+          'content-type': 'Multiple/form-data',
+          "Authorization": 'token ${sharedPreferences.getString('token')}' ?? ''
+        });
+
+    if (response.statusCode == 200) {
+      print(json.decode(response.body));
+      return json.decode(response.body);
+    } else {
+      print("Error");
+    }
   }
 }

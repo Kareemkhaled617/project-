@@ -1,12 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:p/All.dart';
 import 'package:http/http.dart';
-
-import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 import 'login.dart';
 
@@ -14,6 +12,7 @@ class register extends StatefulWidget {
   const register({
     Key? Key,
   }) : super(key: Key);
+
   @override
   State<register> createState() => _registerState();
 }
@@ -21,6 +20,7 @@ class register extends StatefulWidget {
 class _registerState extends State<register> {
   File? imageFile;
   final picker = ImagePicker();
+
   Future<void> _showChoiceDialog(BuildContext context) {
     return showDialog(
         context: context,
@@ -156,6 +156,7 @@ class _registerState extends State<register> {
   }
 
   TextEditingController textController = TextEditingController();
+
   void iniState() {
     super.initState();
   }
@@ -251,7 +252,7 @@ class _registerState extends State<register> {
                   prefixIcon: const Icon(
                     Icons.person,
                   ),
-                  labelText: 'Full name',
+                  labelText: 'Username',
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30.0)),
                 ),
@@ -368,16 +369,12 @@ class _registerState extends State<register> {
                               pass: passwordController.text,
                               image: imageFile!,
                               phone: phoneController.text)
-                          .then((value) => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => login()),
-                              ));
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => All()),
-                      );
+                          .then((value) {
+                        if (value['success'] != null) {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => login()));
+                        }
+                      });
                     }
                   },
                   child: const Text(
@@ -407,13 +404,12 @@ class _registerState extends State<register> {
       'POST',
       Uri.parse('https://172-105-248-224.ip.linodeusercontent.com/signup/'),
     );
-
     // Add fields to the request
     request.fields['username'] = username;
     request.fields['email'] = email;
     request.fields['password'] = pass;
     request.fields['profile.mobile'] = phone;
-
+    request.headers['content-type'] = 'Multiple/form-data';
     // Add image file to the request
     var imageField = await MultipartFile.fromPath(
       'profile.profile_pic',
@@ -425,11 +421,6 @@ class _registerState extends State<register> {
     var response = await Response.fromStream(streamedResponse);
     var data = json.decode(response.body);
     print(data);
-
-    if (data['message'] == 'User registered successfully') {
-      // Handle successful registration
-    }
-
     return data;
   }
 }

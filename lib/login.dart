@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-//import 'package:app1/all.dart';
-import 'package:p/All.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
+//import 'package:app1/all.dart';
+import 'package:p/All.dart';
 import 'package:p/register.dart';
-import 'package:flutter/material.dart';
 
 import 'main.dart';
 //import 'cam.dart';
@@ -121,17 +121,16 @@ class login extends StatelessWidget {
                                   password: passwordController.text,
                                   context: context)
                               .then((value) {
-                                if(value['token'].toString().isNotEmpty){
-                                  sharedPreferences.setString('token', value['token']);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => All()),
-                                  );
-
-                                }
-
-                          } );
+                            print(value);
+                            if (value['token'] != null) {
+                              sharedPreferences.setString(
+                                  'token', value['token']);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => All()),
+                              );
+                            }
+                          });
                         }
                       },
                       child: const Text(
@@ -175,6 +174,7 @@ class login extends StatelessWidget {
   Future loginApi({required String username, password, context}) async {
     var res = await post(
         Uri.parse('https://172-105-248-224.ip.linodeusercontent.com/login/'),
+
         body: {
           'username': username,
           "password": password,

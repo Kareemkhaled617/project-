@@ -1,11 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:p/cam.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-
 import 'package:p/listpro.dart';
 
 import 'main.dart';
@@ -22,7 +20,7 @@ class DisplayPhoto extends StatefulWidget {
 }
 
 class _DisplayPhotoState extends State<DisplayPhoto> {
-  String result = 'No Data';
+  String result = '';
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -73,8 +71,17 @@ class _DisplayPhotoState extends State<DisplayPhoto> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('Result : ',style: TextStyle(fontWeight: FontWeight.w900,fontSize: 18),),
-                  Text(result,style: const TextStyle(fontWeight: FontWeight.w900,fontSize: 18),),
+                  const Text(
+                    'Result : ',
+                    style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18),
+                  ),
+                  result == ''
+                      ? const CircularProgressIndicator()
+                      : Text(
+                          result,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w900, fontSize: 18),
+                        ),
                 ],
               ),
             ],
@@ -89,16 +96,9 @@ class _DisplayPhotoState extends State<DisplayPhoto> {
       'POST',
       Uri.parse('https://172-105-248-224.ip.linodeusercontent.com/predict/'),
     );
-
-    // Add headers to the request
     request.headers['content-type'] = 'Multiple/form-data';
     request.headers['Authorization'] =
         'token ${sharedPreferences.getString('token')}' ?? '';
-
-    // Add fields to the request
-    // request.fields['username'] = username;
-
-    // Add image file to the request
     var imageField = await MultipartFile.fromPath(
       'image',
       image.path,
@@ -108,13 +108,8 @@ class _DisplayPhotoState extends State<DisplayPhoto> {
     var streamedResponse = await request.send();
     var response = await Response.fromStream(streamedResponse);
     var data = json.decode(response.body);
-     result = data['Disease'];
+    result = data['Disease'];
     print(data);
-
-    // if (data['message'] == 'User registered successfully') {
-    //   // Handle successful registration
-    // }
-
     return result;
   }
 }
