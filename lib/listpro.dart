@@ -5,7 +5,7 @@ import 'package:http/http.dart';
 import 'package:p/All.dart';
 import 'package:p/feedback.dart';
 import 'package:p/history_list.dart';
-import 'package:p/pro.dart';
+import 'package:p/profile/pro.dart';
 import 'package:p/screens/diseases_list.dart';
 import 'package:p/screens/governatlist.dart';
 import 'package:p/step1.dart';

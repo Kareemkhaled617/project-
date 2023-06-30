@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:p/animate.dart';
-import 'package:p/pro.dart';
+import 'package:p/profile/pro.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 late SharedPreferences sharedPreferences;
 

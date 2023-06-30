@@ -7,12 +7,12 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:p/listpro.dart';
 import 'package:p/password.dart';
-import 'package:p/pro.dart';
+import 'package:p/profile/pro.dart';
 
-import 'main.dart';
+import '../main.dart';
 
-class edit extends StatefulWidget {
-  const edit({
+class EditImage extends StatefulWidget {
+  const EditImage({
     Key? Key,
     required this.name,
     required this.mobile,
@@ -26,10 +26,10 @@ class edit extends StatefulWidget {
   final String image;
 
   @override
-  State<edit> createState() => _editState();
+  State<EditImage> createState() => _EditImageState();
 }
 
-class _editState extends State<edit> {
+class _EditImageState extends State<EditImage> {
   File? imageFile;
   final picker = ImagePicker();
 
@@ -264,89 +264,7 @@ class _editState extends State<edit> {
               const SizedBox(
                 height: 30,
               ),
-              TextFormField(
-                autofocus: false,
-                controller: nameController,
-                keyboardType: TextInputType.name,
-                onFieldSubmitted: (String value) {
-                  print(value);
-                },
-                onChanged: (String value) {
-                  print(value);
-                },
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(
-                    Icons.person,
-                  ),
-                  labelText: 'Change Name',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0)),
-                ),
-                validator: (value) {
-                  if (value!.isEmpty ||
-                      !RegExp(r'^[a-z A-Z]+$').hasMatch(value!)) {
-                    return "Enter correct Name";
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20.0),
-              TextFormField(
-                controller: emailController,
-                keyboardType: TextInputType.emailAddress,
-                onFieldSubmitted: (String value) {
-                  print(value);
-                },
-                onChanged: (String value) {
-                  print(value);
-                },
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(
-                    Icons.email,
-                  ),
-                  labelText: 'Change Email Address',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0)),
-                ),
-                validator: (value) {
-                  if (value!.isEmpty ||
-                      !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}')
-                          .hasMatch(value!)) {
-                    return "Enter correct Email";
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20.0),
-              TextFormField(
-                controller: phoneController,
-                keyboardType: TextInputType.phone,
-                onFieldSubmitted: (String value) {
-                  print(value);
-                },
-                onChanged: (String value) {
-                  print(value);
-                },
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(
-                    Icons.phone_android,
-                  ),
-                  labelText: 'Change Phone',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0)),
-                ),
-                validator: (value) {
-                  if (value!.isEmpty ||
-                      !RegExp(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]+$')
-                          .hasMatch(value!)) {
-                    return "Enter correct Phone";
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(
-                height: 20.0,
-              ),
+
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -364,7 +282,7 @@ class _editState extends State<edit> {
                           .then((value) {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => pro()),
+                          MaterialPageRoute(builder: (context) => const pro()),
                         );
                       });
                     }
@@ -375,26 +293,6 @@ class _editState extends State<edit> {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 15.0,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => password()),
-                      );
-                    },
-                    child: const Text(
-                      'Change My Password',
-                      style: TextStyle(fontSize: 15),
-                    ),
-                  )
-                ],
-              )
             ],
           )),
         ),
@@ -409,15 +307,15 @@ class _editState extends State<edit> {
     required File image,
   }) async {
     var request = MultipartRequest(
-      'PUT',
+      'PATCH',
       Uri.parse(
           'https://172-105-248-224.ip.linodeusercontent.com/updateprofile/'),
     );
 
     // Add fields to the request
-    request.fields['username'] = username;
-    request.fields['email'] = email;
-    request.fields['userprofile.mobile'] = phone;
+    // request.fields['username'] = username;
+    // request.fields['email'] = email;
+    // request.fields['userprofile.mobile'] = phone;
     request.headers['content-type'] = 'Multiple/form-data';
     request.headers['Authorization'] =
         'token ${sharedPreferences.getString('token')}' ?? '';

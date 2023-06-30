@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:p/listpro.dart';
-import 'package:p/pro.dart';
+import 'package:p/profile/pro.dart';
 
 import 'main.dart';
 
