@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:p/listpro.dart';
-import 'package:p/profile/edit.dart';
 
 import '../main.dart';
 import '../password.dart';
@@ -39,14 +38,25 @@ class pro extends StatelessWidget {
                         Stack(
                           alignment: Alignment.bottomRight,
                           children: [
-                            ClipOval(
-                              child: Image.network(
-                                data['userprofile']['profile_pic'],
-                                width: 150,
-                                height: 150,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
+                            data['userprofile'] != null
+                                ? ClipOval(
+                                    child: Image.network(
+                                      data['userprofile']['profile_pic'],
+                                      width: 150,
+                                      height: 150,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )
+                                : CircleAvatar(
+                                    child: ClipOval(
+                                      child: Image.asset(
+                                        'images/p1.jpg',
+                                        width: 90,
+                                        height: 90,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
                             IconButton(
                               onPressed: () {
                                 Navigator.push(

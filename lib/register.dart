@@ -312,7 +312,7 @@ class _registerState extends State<register> {
                 validator: (value) {
                   if (value!.isEmpty ||
                       !RegExp(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]+$')
-                          .hasMatch(value!)) {
+                          .hasMatch(value)) {
                     return "Enter correct Phone";
                   }
                   return null;
@@ -363,18 +363,36 @@ class _registerState extends State<register> {
                 child: MaterialButton(
                   onPressed: () {
                     if (formkey.currentState!.validate()) {
-                      register(
-                              username: nameController.text,
-                              email: emailController.text,
-                              pass: passwordController.text,
-                              image: imageFile!,
-                              phone: phoneController.text)
-                          .then((value) {
-                        if (value['success'] != null) {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => login()));
-                        }
-                      });
+                      if (imageFile != null) {
+                        register(
+                                username: nameController.text,
+                                email: emailController.text,
+                                pass: passwordController.text,
+                                image: imageFile!,
+                                phone: phoneController.text)
+                            .then((value) {
+                          if (value['success'] != null) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => login()));
+                          }
+                        });
+                      } else {
+                        registerWithoutImage(
+                                username: nameController.text,
+                                email: emailController.text,
+                                pass: passwordController.text,
+                                phone: phoneController.text)
+                            .then((value) {
+                          if (value['success'] != null) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => login()));
+                          }
+                        });
+                      }
                     }
                   },
                   child: const Text(
@@ -422,5 +440,29 @@ class _registerState extends State<register> {
     var data = json.decode(response.body);
     print(data);
     return data;
+  }
+
+  Future registerWithoutImage({
+    required String username,
+    required String email,
+    required String pass,
+    required String phone,
+  }) async {
+    var response = await post(
+        Uri.parse('https://172-105-248-224.ip.linodeusercontent.com/signup/'),
+        body: {
+          'profile.mobile': phone,
+          'password': pass,
+          'email': email,
+          'username': username,
+        });
+
+    if (response.statusCode == 200) {
+      print(json.decode(response.body));
+      return json.decode(response.body);
+    } else {
+      print("Error");
+      print(response.body);
+    }
   }
 }
