@@ -10,6 +10,7 @@ import 'package:p/screens/diseases_list.dart';
 import 'package:p/screens/governatlist.dart';
 import 'package:p/step1.dart';
 
+import 'add_task/todo.dart';
 import 'login.dart';
 import 'main.dart';
 
@@ -59,6 +60,16 @@ class listpro extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => All()),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.add),
+            title: const Text('ِAdd'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => todo()),
               );
             },
           ),
