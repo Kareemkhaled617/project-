@@ -15,11 +15,10 @@ class todo extends StatefulWidget {
 class _todoState extends State<todo> {
   final list1 = ToDo.list1();
   final _todoCotronller = TextEditingController();
-  List<ToDo> _foundToDo = [];
+  String search = '';
 
   @override
   void iniState() {
-    _foundToDo = list1;
     super.initState();
   }
 
@@ -39,13 +38,46 @@ class _todoState extends State<todo> {
           const SizedBox(
             height: 16,
           ),
-          searchBox(),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20)),
+                  child: TextFormField(
+                    onChanged: (value) {
+                      setState(() {
+                        search = value;
+                      });
+                    },
+                    decoration: const InputDecoration(
+                      contentPadding: EdgeInsets.all(0),
+                      prefixIcon: Icon(Icons.search, size: 20),
+                      prefixIconConstraints: BoxConstraints(
+                        maxHeight: 20,
+                        minWidth: 25,
+                      ),
+                      border: InputBorder.none,
+                      hintText: 'Search',
+                    ),
+                  ),
+                ),
+              ),
+              IconButton(
+                  onPressed: () {
+                    setState(() {});
+                  },
+                  icon: const Icon(Icons.search)),
+            ],
+          ),
           const SizedBox(
             height: 16,
           ),
           Expanded(
               child: FutureBuilder(
-            future: getTsk(),
+            future: getTsk(search),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 List data = snapshot.data as List;
@@ -140,51 +172,30 @@ class _todoState extends State<todo> {
     return data;
   }
 
-  Future getTsk() async {
-    var res = await get(
-      Uri.parse('https://172-105-248-224.ip.linodeusercontent.com/tasks/'),
-      headers: {
-        "Authorization": 'token ${sharedPreferences.getString('token')}' ?? ''
-      },
-    );
-    var data = json.decode(res.body);
-    return data;
-  }
-
-  void _runFilter(String enteredKeyword) {
-    List<ToDo> results = [];
-    if (enteredKeyword.isEmpty) {
-      results = list1;
+  Future getTsk(String sear) async {
+    if (search.isEmpty) {
+      var res = await get(
+        Uri.parse('https://172-105-248-224.ip.linodeusercontent.com/tasks/'),
+        headers: {
+          "Authorization": 'token ${sharedPreferences.getString('token')}' ?? ''
+        },
+      );
+      var data = json.decode(res.body);
+      print(data);
+      print('search');
+      return data;
     } else {
-      results = list1
-          .where((item) => item.todotext!
-              .toLowerCase()
-              .contains(enteredKeyword.toLowerCase()))
-          .toList();
+      var res = await get(
+        Uri.parse(
+            'https://172-105-248-224.ip.linodeusercontent.com/tasks/?title=$sear'),
+        headers: {
+          "Authorization": 'token ${sharedPreferences.getString('token')}' ?? ''
+        },
+      );
+      var data = json.decode(res.body);
+      print(data);
+      print('noooooooooo');
+      return data;
     }
-    setState(() {
-      _foundToDo = results;
-    });
-  }
-
-  Widget searchBox() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(20)),
-      child: TextField(
-        onChanged: (value) => _runFilter(value),
-        decoration: const InputDecoration(
-          contentPadding: EdgeInsets.all(0),
-          prefixIcon: Icon(Icons.search, size: 20),
-          prefixIconConstraints: BoxConstraints(
-            maxHeight: 20,
-            minWidth: 25,
-          ),
-          border: InputBorder.none,
-          hintText: 'Search',
-        ),
-      ),
-    );
   }
 }
